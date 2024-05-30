@@ -53,14 +53,14 @@ class ManipLoco(LeggedRobot):
     cfg: ManipLocoCfg
 
     def __init__(self, cfg, *args, **kwargs):
-        if cfg.env.observe_gait_commands:
+        if cfg.env.observe_gait_commands:   # set on b1z1_config.py -- env
             print("||||||||||Observe gait commands!")
             cfg.env.num_proprio += 5 # gait_indices=1, clock_phase=4
         self.vel_obs = cfg.env.observe_velocities
         self.stand_only = cfg.env.stand_only
         if not self.vel_obs:
-            cfg.env.num_proprio -= 21 # ang vel*3 + joint vel*18
-        cfg.env.num_observations = cfg.env.num_proprio * (cfg.env.history_len+1) + cfg.env.num_priv
+            cfg.env.num_proprio -= 21 # ang vel*3 + joint vel*18    # TODO need explanation
+        cfg.env.num_observations = cfg.env.num_proprio * (cfg.env.history_len+1) + cfg.env.num_priv  # 744 = proprioceptive 66 * [history+current(10+1)] + private 18
         self.num_obs = cfg.env.num_observations
         self.stand_by = cfg.env.stand_by
         self.pitch_control = cfg.env.pitch_control
@@ -68,7 +68,7 @@ class ManipLoco(LeggedRobot):
 
     def _parse_cfg(self, cfg):
         self.num_torques = self.cfg.env.num_torques
-        self.dt = self.cfg.control.decimation * self.sim_params.dt
+        self.dt = self.cfg.control.decimation * self.sim_params.dt  # simulated timestep
         self.obs_scales = self.cfg.normalization.obs_scales
         self.reward_scales = class_to_dict(self.cfg.rewards.scales)
         self.arm_reward_scales = class_to_dict(self.cfg.rewards.arm_scales)
@@ -86,10 +86,11 @@ class ManipLoco(LeggedRobot):
         self.record_video = self.cfg.env.record_video
 
     def _prepare_reward_function(self):
-        """ Prepares a list of reward functions, whcih will be called to compute the total reward.
-            Looks for self._reward_<REWARD_NAME>, where <REWARD_NAME> are names of all non zero reward scales in the cfg.
+        """ Prepares a list of reward functions, which will be called to compute the total reward. Looks for 
+        self._reward_<REWARD_NAME>, where <REWARD_NAME> are names of all non-zero reward scales in the cfg.
         """
         self.reward_scales = {k:v for k,v in self.reward_scales.items() if v is not None and v != 0}
+        # Create a new dict includes items from the original self.reward_scales dictionary where value not None or 0.
 
         # prepare list of functions
         self.reward_functions = []
@@ -99,7 +100,7 @@ class ManipLoco(LeggedRobot):
                 continue
             self.reward_names.append(name)
             name = '_reward_' + name
-            self.reward_functions.append(getattr(self, name))
+            self.reward_functions.append(getattr(self, name))   # TODO need explanation
 
         self.arm_reward_scales = {k:v for k,v in self.arm_reward_scales.items() if v is not None and v != 0}
 
@@ -129,11 +130,11 @@ class ManipLoco(LeggedRobot):
         self.rew_buf[:] = 0.
         for i in range(len(self.reward_functions)):
             name = self.reward_names[i]
-            rew, metric = self.reward_functions[i]()
+            rew, metric = self.reward_functions[i]()    # 105 --> Function?
             rew = rew * self.reward_scales[name]
             self.rew_buf += rew
             self.episode_sums[name] += rew
-            self.episode_metric_sums[name] += metric
+            self.episode_metric_sums[name] += metric    # metric_rew is rew without scaling
         if self.cfg.rewards.only_positive_rewards:
             self.rew_buf[:] = torch.clip(self.rew_buf[:], min=0.)
         # add termination reward after clipping
@@ -169,12 +170,12 @@ class ManipLoco(LeggedRobot):
 
     def _get_env_origins(self):
         """ Sets environment origins. On rough terrain the origins are defined by the terrain platforms.
-            Otherwise create a grid.
+            Otherwise, create a grid.
         """
         self.custom_origins = True
-        self.env_origins = torch.zeros(self.num_envs, 3, device=self.device, requires_grad=False)
+        self.env_origins = torch.zeros(self.num_envs, 3, device=self.device, requires_grad=False)   # 3 = (x,y,z) of env origins
         # put robots at the origins defined by the terrain
-        max_init_level = self.cfg.terrain.max_init_terrain_level  # start from 0
+        max_init_level = self.cfg.terrain.max_init_terrain_level  # terrain_level starts from 0
         if not self.cfg.terrain.curriculum: max_init_level = self.cfg.terrain.num_rows - 1
         self.terrain_levels = torch.randint(0, max_init_level+1, (self.num_envs,), device=self.device)
         self.terrain_types = torch.div(torch.arange(self.num_envs, device=self.device), (self.num_envs/self.cfg.terrain.num_cols), rounding_mode='floor').to(torch.long)
@@ -185,19 +186,18 @@ class ManipLoco(LeggedRobot):
     def create_sim(self):
         """ Creates simulation, terrain and evironments
         """
-        self.up_axis_idx = 2 # 2 for z, 1 for y -> adapt gravity accordingly
+        self.up_axis_idx = 2 # 2 for z(up), 1 for y -> adapt gravity accordingly
         self.sim = self.gym.create_sim(self.sim_device_id, self.graphics_device_id, self.physics_engine, self.sim_params)
         self.terrain = Terrain(self.cfg.terrain, )
         self._create_trimesh()
         # self._create_ground_plane()
-        self._create_envs()
-        
+        self._create_envs()  # line 225 --> Function
     def _create_ground_plane(self):
         plane_params = gymapi.PlaneParams()
         plane_params.normal = gymapi.Vec3(0, 0, 1)
         plane_params.static_friction = self.cfg.terrain.static_friction
         plane_params.dynamic_friction = self.cfg.terrain.dynamic_friction
-        plane_params.restitution = self.cfg.terrain.restitution
+        plane_params.restitution = self.cfg.terrain.restitution     # rebound after collision
         self.gym.add_ground(self.sim, plane_params)
         print("Added ground plane with friction: {}, restitution: {}".format(plane_params.static_friction, plane_params.restitution))
         return
@@ -231,7 +231,7 @@ class ManipLoco(LeggedRobot):
              3. Store indices of different bodies of the robot
         """
         asset_path = self.cfg.asset.file.format(LEGGED_GYM_ROOT_DIR=LEGGED_GYM_ROOT_DIR)
-        asset_root = os.path.dirname(asset_path)
+        asset_root = os.path.dirname(asset_path)    # define in b1z1_config.py
         asset_file = os.path.basename(asset_path)
 
         asset_options = gymapi.AssetOptions()
@@ -254,7 +254,7 @@ class ManipLoco(LeggedRobot):
         robot_asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
         self.num_dofs = self.gym.get_asset_dof_count(robot_asset)
         self.num_bodies = self.gym.get_asset_rigid_body_count(robot_asset)
-        dof_props_asset = self.gym.get_asset_dof_properties(robot_asset)
+        dof_props_asset = self.gym.get_asset_dof_properties(robot_asset)  # dofs physics properties
         # dof_props_asset['driveMode'][12:].fill(gymapi.DOF_MODE_POS)  # set arm to pos control
         # dof_props_asset['stiffness'][12:].fill(400.0)
         # dof_props_asset['damping'][12:].fill(40.0)
@@ -266,13 +266,13 @@ class ManipLoco(LeggedRobot):
         self.dof_names_to_idx = self.gym.get_asset_dof_dict(robot_asset)
         # self.num_bodies = len(self.body_names)
         # self.num_dofs = len(self.dof_names)
-        feet_names = [s for s in self.body_names if self.cfg.asset.foot_name in s]
+        feet_names = [s for s in self.body_names if self.cfg.asset.foot_name in s]  # foot_name = "foot" in b1z1_config
         penalized_contact_names = []
         for name in self.cfg.asset.penalize_contacts_on:
             body_names = [s for s in self.body_names if name in s]
             if len(body_names) == 0:
                 raise Exception('No body found with name {}'.format(name))
-            penalized_contact_names.extend(body_names)
+            penalized_contact_names.extend(body_names)  # add penalized_joints in list penalized_contact_names
         termination_contact_names = []
         for name in self.cfg.asset.terminate_after_contacts_on:
             body_names = [s for s in self.body_names if name in s]
@@ -288,7 +288,7 @@ class ManipLoco(LeggedRobot):
             foot_idx = self.body_names_to_idx[name]
             sensor_pose = gymapi.Transform(gymapi.Vec3(0.0, 0.0, -0.05))
             sensor_idx = self.gym.create_asset_force_sensor(robot_asset, foot_idx, sensor_pose)
-            self.sensor_indices.append(sensor_idx)
+            self.sensor_indices.append(sensor_idx)      # sensor_indices for --> 4 feet
         
         self.gripper_idx = self.body_names_to_idx[self.cfg.asset.gripper_name]
 
@@ -309,76 +309,78 @@ class ManipLoco(LeggedRobot):
         print('feet_names: {}'.format(feet_names))
         print(f"EE Gripper index: {self.gripper_idx}")
 
-        base_init_state_list = self.cfg.init_state.pos + self.cfg.init_state.rot + self.cfg.init_state.lin_vel + self.cfg.init_state.ang_vel
+        base_init_state_list = (self.cfg.init_state.pos + self.cfg.init_state.rot + self.cfg.init_state.lin_vel +
+                                self.cfg.init_state.ang_vel)    # initial state list
         self.base_init_state = to_torch(base_init_state_list, device=self.device, requires_grad=False)
-        start_pose = gymapi.Transform()
-        start_pose.p = gymapi.Vec3(*self.base_init_state[:3])
+        start_pose = gymapi.Transform()     # Transform presents the pose of the robot in 3D env
+        start_pose.p = gymapi.Vec3(*self.base_init_state[:3])   # point to self.cfg.init_state.pos in line 312， * unpacks the list
         box_start_pose = gymapi.Transform()
 
         self._get_env_origins()
         env_lower = gymapi.Vec3(0., 0., 0.)
-        env_upper = gymapi.Vec3(0., 0., 0.)
+        env_upper = gymapi.Vec3(0., 0., 0.)     # with no space limitation
         self.actor_handles = []
-        self.box_actor_handles = []
+        self.box_actor_handles = []     # handles, like middle-layer
         box_body_indices = []
         self.envs = []
-        self.mass_params_tensor = torch.zeros(self.num_envs, 5, dtype=torch.float, device=self.device, requires_grad=False)
+        self.mass_params_tensor = torch.zeros(self.num_envs, 5, dtype=torch.float, device=self.device,
+                                              requires_grad=False)  # mass parameters for each env
         for i in range(self.num_envs):
-            arm_kp = np.random.uniform(300,400)
+            arm_kp = np.random.uniform(300, 400)
             
             dof_props_asset['driveMode'][12:].fill(gymapi.DOF_MODE_POS)  # set arm to pos control
             dof_props_asset['stiffness'][12:].fill(arm_kp)
-            dof_props_asset['damping'][12:].fill(40.0)
+            dof_props_asset['damping'][12:].fill(40.0)  # physical properties of the arm, [12:] --> arm control
         
             # create env instance
-            env_handle = self.gym.create_env(self.sim, env_lower, env_upper, int(np.sqrt(self.num_envs)))
+            env_handle = self.gym.create_env(self.sim, env_lower, env_upper, int(np.sqrt(self.num_envs)))  # Number of environments to tile in a row in square, like x*x, not a line
             self.envs.append(env_handle)
 
             # widowGo1 
-            pos = self.env_origins[i].clone()
+            pos = self.env_origins[i].clone()   # env_origins --> robot origins
             pos[:2] += torch_rand_float(-self.cfg.init_state.origin_perturb_range, self.cfg.init_state.origin_perturb_range, (2,1), device=self.device).squeeze(1)
             rand_yaw_quat = gymapi.Quat.from_euler_zyx(0., 0., self.cfg.init_state.rand_yaw_range*np.random.uniform(-1, 1))
             start_pose.r = rand_yaw_quat
-            start_pose.p = gymapi.Vec3(*pos)
+            start_pose.p = gymapi.Vec3(*pos)    # random start pose of robots
             
             rigid_shape_props = self._process_rigid_shape_props(rigid_shape_props_asset, i)
-            self.gym.set_asset_rigid_shape_properties(robot_asset, rigid_shape_props)
+            self.gym.set_asset_rigid_shape_properties(robot_asset, rigid_shape_props)   # static properties of the robot
             robot_dog_handle = self.gym.create_actor(env_handle, robot_asset, start_pose, "robot_dog", i, self.cfg.asset.self_collisions, 0)
             self.actor_handles.append(robot_dog_handle)
 
             dof_props = self._process_dof_props(dof_props_asset, i)
-            self.gym.set_actor_dof_properties(env_handle, robot_dog_handle, dof_props)
+            self.gym.set_actor_dof_properties(env_handle, robot_dog_handle, dof_props)  # dynamic properties of the robot
             body_props = self.gym.get_actor_rigid_body_properties(env_handle, robot_dog_handle)
             body_props, mass_params = self._process_rigid_body_props(body_props, i)
             self.gym.set_actor_rigid_body_properties(env_handle, robot_dog_handle, body_props, recomputeInertia=True)
             
-            self.mass_params_tensor[i, :] = torch.from_numpy(mass_params).to(self.device)
+            self.mass_params_tensor[i, :] = torch.from_numpy(mass_params).to(self.device)   # TODO mass params
 
             # box
             box_pos = pos.clone()
             box_pos[0] += 2
             box_pos[2] += self.cfg.box.box_env_origins_z
-            box_start_pose.p = gymapi.Vec3(*box_pos)
+            box_start_pose.p = gymapi.Vec3(*box_pos)    # set box position
             box_handle = self.gym.create_actor(env_handle, box_asset, box_start_pose, "box", i, self.cfg.asset.self_collisions, 0)
             self.box_actor_handles.append(box_handle)
 
             box_body_props = self.gym.get_actor_rigid_body_properties(env_handle, box_handle)
-            box_body_props, _ = self._box_process_rigid_body_props(box_body_props, i)
+            box_body_props, _ = self._box_process_rigid_body_props(box_body_props, i)   # TODO why
             self.gym.set_actor_rigid_body_properties(env_handle, box_handle, box_body_props, recomputeInertia=True)
 
             box_body_idx = self.gym.get_actor_rigid_body_index(env_handle, box_handle, 0, gymapi.DOMAIN_SIM)
             box_body_indices.append(box_body_idx)
         
-        assert(np.all(np.array(self.actor_handles) == 0))
-        assert(np.all(np.array(self.box_actor_handles) == 1))
+        assert(np.all(np.array(self.actor_handles) == 0))       # is first actor --> 0, sec --> 1? so robot handle are 0
+        assert(np.all(np.array(self.box_actor_handles) == 1))   # TODO value of handle? how to compute handle?
         assert(np.all(np.array(box_body_indices) % (self.num_bodies + 1) == self.num_bodies))
-        self.robot_actor_indices = torch.arange(0, 2 * self.num_envs, 2, device=self.device)
+        self.robot_actor_indices = torch.arange(0, 2 * self.num_envs, 2, device=self.device)    # TODO why 2*num_envs?
         self.box_actor_indices = torch.arange(1, 2 * self.num_envs, 2, device=self.device)
 
         self.friction_coeffs_tensor = self.friction_coeffs.to(self.device).squeeze(-1)
 
         if self.cfg.domain_rand.randomize_motor:
-            self.motor_strength = torch.cat([
+            self.motor_strength = torch.cat([   # 12 + 6, concat body + arm
                     torch_rand_float(self.cfg.domain_rand.leg_motor_strength_range[0], self.cfg.domain_rand.leg_motor_strength_range[1], (self.num_envs, 12), device=self.device),
                     torch_rand_float(self.cfg.domain_rand.arm_motor_strength_range[0], self.cfg.domain_rand.arm_motor_strength_range[1], (self.num_envs, 6), device=self.device)
                 ], dim=1)
@@ -419,7 +421,7 @@ class ManipLoco(LeggedRobot):
                 self._rendering_camera_handles.append(camera_handle)
                 self.gym.set_camera_location(camera_handle, self.envs[i], gymapi.Vec3(*cam_pos), gymapi.Vec3(*0*cam_pos))
     
-    def _process_rigid_body_props(self, props, env_id):
+    def _process_rigid_body_props(self, props, env_id):     # _process --> Domain Randomization before env creation
         if self.cfg.domain_rand.randomize_base_mass:
             rng_mass = self.cfg.domain_rand.added_mass_range
             rand_mass = np.random.uniform(rng_mass[0], rng_mass[1], size=(1, ))
@@ -456,7 +458,7 @@ class ManipLoco(LeggedRobot):
         
         return props, rand_mass
     
-    def _randomize_rigid_body_props(self, env_ids):
+    def _randomize_rigid_body_props(self, env_ids):     # _randomize --> Domain Randomization in training
         if self.cfg.domain_rand.randomize_friction:
             min_friction, max_friction = self.cfg.domain_rand.friction_range
             self.friction_coeffs[env_ids] = torch.rand(len(env_ids), 1, 1, dtype=torch.float, device=self.device,
@@ -469,7 +471,7 @@ class ManipLoco(LeggedRobot):
                                                     requires_grad=False) * (
                                                  max_restitution - min_restitution) + min_restitution
 
-    def refresh_actor_rigid_shape_props(self, env_ids):
+    def refresh_actor_rigid_shape_props(self, env_ids):     # other refresh has been built-in gym api
         for env_id in env_ids:
             rigid_shape_props = self.gym.get_actor_rigid_shape_properties(self.envs[env_id], 0)
 
@@ -525,7 +527,7 @@ class ManipLoco(LeggedRobot):
         
         return props
 
-    def _init_buffers(self):
+    def _init_buffers(self):    # TODO continue here
         """ Initialize torch tensors which will contain simulation states and processed quantities
         """
         self.action_scale = torch.tensor(self.cfg.control.action_scale, device=self.device)
