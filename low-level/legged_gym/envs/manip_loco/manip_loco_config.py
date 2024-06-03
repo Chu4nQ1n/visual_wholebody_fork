@@ -300,7 +300,7 @@ class ManipLocoCfg( LeggedRobotCfg ):
         max_init_terrain_level = 5 # starting curriculum state
         terrain_length = 8.
         terrain_width = 8.
-        num_rows= 10 # number of terrain rows (levels)  # spreaded is benifitiall !
+        num_rows= 10 # number of terrain rows (levels)  # spread is beneficial !
         num_cols = 20 # number of terrain cols (types)
 
         terrain_dict = {"smooth slope": 0., 
