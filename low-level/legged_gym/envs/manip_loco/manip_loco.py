@@ -59,7 +59,7 @@ class ManipLoco(LeggedRobot):
         self.vel_obs = cfg.env.observe_velocities
         self.stand_only = cfg.env.stand_only
         if not self.vel_obs:
-            cfg.env.num_proprio -= 21 # ang vel*3 + joint vel*18    # TODO need explanation
+            cfg.env.num_proprio -= 21 # ang vel*3 + joint vel*18    # num_priv --> last action  --> RMA
         cfg.env.num_observations = cfg.env.num_proprio * (cfg.env.history_len+1) + cfg.env.num_priv  # 744 = proprioceptive 66 * [history+current(10+1)] + private 18
         self.num_obs = cfg.env.num_observations
         self.stand_by = cfg.env.stand_by
@@ -100,7 +100,7 @@ class ManipLoco(LeggedRobot):
                 continue
             self.reward_names.append(name)
             name = '_reward_' + name
-            self.reward_functions.append(getattr(self, name))   # TODO need explanation
+            self.reward_functions.append(getattr(self, name))   # getattr() returns the methods of the object
 
         self.arm_reward_scales = {k:v for k,v in self.arm_reward_scales.items() if v is not None and v != 0}
 
@@ -326,8 +326,8 @@ class ManipLoco(LeggedRobot):
         self.mass_params_tensor = torch.zeros(self.num_envs, 5, dtype=torch.float, device=self.device,
                                               requires_grad=False)  # mass parameters for each env
         for i in range(self.num_envs):
-            arm_kp = np.random.uniform(300, 400)
-            
+            # arm_kp = np.random.uniform(300, 400)
+            arm_kp = 400    # follow the update of the arm_kp from upstream
             dof_props_asset['driveMode'][12:].fill(gymapi.DOF_MODE_POS)  # set arm to pos control
             dof_props_asset['stiffness'][12:].fill(arm_kp)
             dof_props_asset['damping'][12:].fill(40.0)  # physical properties of the arm, [12:] --> arm control
@@ -354,7 +354,7 @@ class ManipLoco(LeggedRobot):
             body_props, mass_params = self._process_rigid_body_props(body_props, i)
             self.gym.set_actor_rigid_body_properties(env_handle, robot_dog_handle, body_props, recomputeInertia=True)
             
-            self.mass_params_tensor[i, :] = torch.from_numpy(mass_params).to(self.device)   # TODO mass params
+            self.mass_params_tensor[i, :] = torch.from_numpy(mass_params).to(self.device)   # mass_para = mass
 
             # box
             box_pos = pos.clone()
@@ -365,16 +365,16 @@ class ManipLoco(LeggedRobot):
             self.box_actor_handles.append(box_handle)
 
             box_body_props = self.gym.get_actor_rigid_body_properties(env_handle, box_handle)
-            box_body_props, _ = self._box_process_rigid_body_props(box_body_props, i)   # TODO why
+            box_body_props, _ = self._box_process_rigid_body_props(box_body_props, i)   # randomization of box prop
             self.gym.set_actor_rigid_body_properties(env_handle, box_handle, box_body_props, recomputeInertia=True)
 
             box_body_idx = self.gym.get_actor_rigid_body_index(env_handle, box_handle, 0, gymapi.DOMAIN_SIM)
             box_body_indices.append(box_body_idx)
         
         assert(np.all(np.array(self.actor_handles) == 0))       # is first actor --> 0, sec --> 1? so robot handle are 0
-        assert(np.all(np.array(self.box_actor_handles) == 1))   # TODO value of handle? how to compute handle?
+        assert(np.all(np.array(self.box_actor_handles) == 1))   # yes!
         assert(np.all(np.array(box_body_indices) % (self.num_bodies + 1) == self.num_bodies))
-        self.robot_actor_indices = torch.arange(0, 2 * self.num_envs, 2, device=self.device)    # TODO why 2*num_envs?
+        self.robot_actor_indices = torch.arange(0, 2 * self.num_envs, 2, device=self.device)
         self.box_actor_indices = torch.arange(1, 2 * self.num_envs, 2, device=self.device)
 
         self.friction_coeffs_tensor = self.friction_coeffs.to(self.device).squeeze(-1)
