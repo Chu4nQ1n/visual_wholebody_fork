@@ -569,7 +569,7 @@ class ManipLoco(LeggedRobot):
         self.action_history_buf = torch.zeros(self.num_envs, self.action_delay + 2, self.num_actions, device=self.device, dtype=torch.float)
 
         self._contact_forces = gymtorch.wrap_tensor(net_contact_forces).view(self.num_envs, -1, 3) # shape: num_envs, num_bodies, xyz axis
-        self.contact_forces = self._contact_forces[:, :-1, :]
+        self.contact_forces = self._contact_forces[:, :-1, :]  # exclude box
         self.box_contact_force = self._contact_forces[:, -1, :]
 
         self._rigid_body_state = gymtorch.wrap_tensor(rigid_body_state_tensor).view(self.num_envs, self.num_bodies + 1, 13)
