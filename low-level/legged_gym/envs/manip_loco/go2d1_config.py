@@ -199,4 +199,4 @@ class GO2D1RoughCfgPPO(ManipLocoCfgPPO):
 
     class runner (ManipLocoCfgPPO.runner):
         max_iterations = 80000 # 40000
-        experiment_name = 'b1z1_v2'
+        experiment_name = 'go2d1'
