@@ -152,7 +152,7 @@ class ManipLocoCfg( LeggedRobotCfg ):
         penalize_contacts_on = []
         terminate_after_contacts_on = []
         self_collisions = 0 # 1 to disable, 0 to enable...bitwise filter
-        flip_visual_attachments = False
+        flip_visual_attachments = True # True for Go2D1, False for B1Z1
         collapse_fixed_joints = True # Specific fixed joints can be kept by adding " <... dont_collapse="true">
         fix_base_link = False
     
@@ -272,7 +272,7 @@ class ManipLocoCfg( LeggedRobotCfg ):
         z_threshold = 0.1
 
     class terrain:
-        mesh_type = 'trimesh' # "heightfield" # none, plane, heightfield or trimesh
+        mesh_type = 'plain' # "heightfield" # none, plane, heightfield or trimesh
         hf2mesh_method = "fast"  # grid or fast
         max_error = 0.1 # for fast
         horizontal_scale = 0.05 # [m] influence computation time by a lot

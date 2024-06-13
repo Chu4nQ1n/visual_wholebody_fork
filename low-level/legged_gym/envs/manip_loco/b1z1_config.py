@@ -191,5 +191,5 @@ class B1Z1RoughCfgPPO(ManipLocoCfgPPO):
         adaptive_arm_gains = B1Z1RoughCfg.control.adaptive_arm_gains
 
     class runner (ManipLocoCfgPPO.runner):
-        max_iterations = 80000 # 40000
+        max_iterations = 40000
         experiment_name = 'b1z1_v2'

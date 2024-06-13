@@ -53,7 +53,7 @@ class ManipLoco(LeggedRobot):
     cfg: ManipLocoCfg
 
     def __init__(self, cfg, *args, **kwargs):
-        if cfg.env.observe_gait_commands:   # set on b1z1_config.py -- env
+        if cfg.env.observe_gait_commands:   # set on go2d1_config.py -- env
             print("||||||||||Observe gait commands!")
             cfg.env.num_proprio += 5 # gait_indices=1, clock_phase=4
         self.vel_obs = cfg.env.observe_velocities
@@ -189,8 +189,8 @@ class ManipLoco(LeggedRobot):
         self.up_axis_idx = 2 # 2 for z(up), 1 for y -> adapt gravity accordingly
         self.sim = self.gym.create_sim(self.sim_device_id, self.graphics_device_id, self.physics_engine, self.sim_params)
         self.terrain = Terrain(self.cfg.terrain, )
-        self._create_trimesh()
-        # self._create_ground_plane()
+        # self._create_trimesh()
+        self._create_ground_plane()
         self._create_envs()  # line 225 --> Function
     def _create_ground_plane(self):
         plane_params = gymapi.PlaneParams()
@@ -231,7 +231,7 @@ class ManipLoco(LeggedRobot):
              3. Store indices of different bodies of the robot
         """
         asset_path = self.cfg.asset.file.format(LEGGED_GYM_ROOT_DIR=LEGGED_GYM_ROOT_DIR)
-        asset_root = os.path.dirname(asset_path)    # define in b1z1_config.py
+        asset_root = os.path.dirname(asset_path)    # define in go2d1_config.py
         asset_file = os.path.basename(asset_path)
 
         asset_options = gymapi.AssetOptions()
@@ -1304,6 +1304,7 @@ class ManipLoco(LeggedRobot):
         ee_target_cart = sphere2cart(torch.permute(ee_target_all_sphere, (2, 0, 1)).reshape(-1, 3)).reshape(self.num_collision_check_samples, -1, 3)
         collision_mask = torch.any(torch.logical_and(torch.all(ee_target_cart < self.collision_upper_limits, dim=-1), torch.all(ee_target_cart > self.collision_lower_limits, dim=-1)), dim=0)
         underground_mask = torch.any(ee_target_cart[..., 2] < self.underground_limit, dim=0)
+        # print("collision_mask: " + str(collision_mask) + "underground_mask: " + str(underground_mask))
         return collision_mask | underground_mask
 
     def update_curr_ee_goal(self):
@@ -1795,7 +1796,7 @@ class ManipLoco(LeggedRobot):
         return rew, rew
     
     def _reward_body_height_tracking(self):
-        b1_stand_up_height = 0.54
+        b1_stand_up_height = 0.24 # 0.54
         tracking_error = torch.square(self.base_pos[:, 2] - b1_stand_up_height)
         height_coeff = 1.0
         rew = torch.exp(-height_coeff*tracking_error)
