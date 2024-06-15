@@ -79,13 +79,13 @@
       </geometry>
     </collision>
   </link>
-  <link name="Head_upper">
+  <!-- <link name="Head_upper">
     <inertial>
       <origin
         xyz="0 0 0"
         rpy="0 0 0" />
       <mass
-        value="0.001" />
+        value="0.000" />
       <inertia
         ixx="9.6e-06"
         ixy="0"
@@ -109,7 +109,7 @@
       xyz="0.285 0 0.01"
       rpy="0 0 0" />
     <parent
-      link="base" />
+      link="trunk" />
     <child
       link="Head_upper" />
     <axis
@@ -121,7 +121,7 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <mass
-        value="0.001" />
+        value="0.000" />
       <inertia
         ixx="9.6e-06"
         ixy="0"
@@ -150,7 +150,7 @@
       link="Head_lower" />
     <axis
       xyz="0 0 0" />
-  </joint>
+  </joint> -->
   <link name="FL_hip">
     <inertial>
       <origin
@@ -193,7 +193,7 @@
       xyz="0.1934 0.0465 0"
       rpy="0 0 0" />
     <parent
-      link="base" />
+      link="trunk" />
     <child
       link="FL_hip" />
     <axis
@@ -440,7 +440,7 @@
       xyz="0.1934 -0.0465 0"
       rpy="0 0 0" />
     <parent
-      link="base" />
+      link="trunk" />
     <child
       link="FR_hip" />
     <axis
@@ -687,7 +687,7 @@
       xyz="-0.1934 0.0465 0"
       rpy="0 0 0" />
     <parent
-      link="base" />
+      link="trunk" />
     <child
       link="RL_hip" />
     <axis
@@ -934,7 +934,7 @@
       xyz="-0.1934 -0.0465 0"
       rpy="0 0 0" />
     <parent
-      link="base" />
+      link="trunk" />
     <child
       link="RR_hip" />
     <axis
@@ -1161,7 +1161,7 @@
       xyz="-0.02557 0 0.04232"
       rpy="0 0 0" />
     <parent
-      link="base" />
+      link="trunk" />
     <child
       link="imu" />
     <axis
@@ -1189,7 +1189,7 @@
       xyz="0.28945 0 -0.046825"
       rpy="0 2.8782 0" />
     <parent
-      link="base" />
+      link="trunk" />
     <child
       link="radar" />
     <axis

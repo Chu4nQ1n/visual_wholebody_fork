@@ -33,15 +33,15 @@ import numpy as np
 
 class GO2D1RoughCfg( ManipLocoCfg ):
     class goal_ee ( ManipLocoCfg.goal_ee ):
-        collision_upper_limits = [0.35, 0.2, -0.05] #0.1, 0.2, -0.05
-        collision_lower_limits = [-0.4, -0.2, -0.4] #-0.8, -0.2, -0.4
-        underground_limit = -0.45 #-0.7
+        collision_upper_limits = [0.25, 0.12, -0.10] #0.4, 0.2, -0.05
+        collision_lower_limits = [-0.25, -0.12, -0.47] #-0.4, -0.2, -0.4
+        underground_limit = -0.47 #-0.7
         arm_induced_pitch = 0.38 # Added to -pos_p (negative goal pitch) to get default eef orn_p # 0.38
     
         class sphere_center ( ManipLocoCfg.goal_ee.sphere_center ):
             x_offset = 0 # Relative to base #0.3
             y_offset = 0 # Relative to base
-            z_invariant_offset = 0.4 # Relative to terrain #0.7
+            z_invariant_offset = 0.47 # Relative to terrain #0.7
         
         class ranges(ManipLocoCfg.goal_ee.ranges):
             init_pos_start = [0.5, np.pi/8, 0]
@@ -55,7 +55,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
         num_commands = 3
         resampling_time = 3. # time before command are changed[s]
 
-        lin_vel_x_schedule = [0, 1]
+        lin_vel_x_schedule = [0, 0.5]
         ang_vel_yaw_schedule = [0, 1]
         tracking_ang_vel_yaw_schedule = [0, 1]
 
@@ -64,7 +64,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
         ang_vel_pitch_clip = ang_vel_yaw_clip
 
         class ranges:
-            lin_vel_x = [-0.6, 0.6] # min max [m/s]
+            lin_vel_x = [-0.8, 0.8] # min max [m/s]
             # lin_vel_y = [0, 0]   # min max [m/s]
             ang_vel_yaw = [-1.0, 1.0]    # min max [rad/s]
             ang_vel_pitch = [-1.0, 1.0]    # min max [rad/s]
@@ -80,6 +80,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
         frequencies = 2
         observe_velocities = True
         stand_only = False
+        pitch_control = False
 
     class init_state( ManipLocoCfg.init_state ):
         pos = [0.0, 0.0, 0.5] # x,y,z [m]
@@ -92,28 +93,52 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             # 'z1_wrist_rotate': 1.57,  # 0.0,
             # 'z1_jointGripper': -0.785,
 
-            'FL_hip_joint': 0.1,  # [rad]
-            'RL_hip_joint': 0.1,  # [rad]
-            'FR_hip_joint': -0.1,  # [rad]
-            'RR_hip_joint': -0.1,  # [rad]
+            # 'FL_hip_joint': 0.1,  # [rad]
+            # 'RL_hip_joint': 0.1,  # [rad]
+            # 'FR_hip_joint': -0.1,  # [rad]
+            # 'RR_hip_joint': -0.1,  # [rad]
+            #
+            # 'FL_thigh_joint': 0.8,  # [rad]
+            # 'RL_thigh_joint': 1.,  # [rad]
+            # 'FR_thigh_joint': 0.8,  # [rad]
+            # 'RR_thigh_joint': 1.,  # [rad]
+            #
+            # 'FL_calf_joint': -1.5,  # [rad]
+            # 'RL_calf_joint': -1.5,  # [rad]
+            # 'FR_calf_joint': -1.5,  # [rad]
+            # 'RR_calf_joint': -1.5,  # [rad]
+            #
+            # 'z1_waist': 0.0,
+            # 'z1_shoulder': 0,
+            # 'z1_elbow': 0, # -0.63,
+            # 'z1_wrist_angle': 0, # -0.84,
+            # 'z1_forearm_roll': 0,
+            # 'z1_wrist_rotate': 0, # 0.0,
+            # 'z1_jointGripper': 0,
 
+            'FL_hip_joint': 0.2,  # [rad]
             'FL_thigh_joint': 0.8,  # [rad]
-            'RL_thigh_joint': 1.,  # [rad]
-            'FR_thigh_joint': 0.8,  # [rad]
-            'RR_thigh_joint': 1.,  # [rad]
-
             'FL_calf_joint': -1.5,  # [rad]
+
+            'RL_hip_joint': 0.2,  # [rad]
+            'RL_thigh_joint': 0.8,  # [rad]
             'RL_calf_joint': -1.5,  # [rad]
+
+            'FR_hip_joint': -0.2,  # [rad]
+            'FR_thigh_joint': 0.8,  # [rad]
             'FR_calf_joint': -1.5,  # [rad]
+
+            'RR_hip_joint': -0.2,  # [rad]
+            'RR_thigh_joint': 0.8,  # [rad]
             'RR_calf_joint': -1.5,  # [rad]
 
             'z1_waist': 0.0,
-            'z1_shoulder': 0,
-            'z1_elbow': 0, # -0.63,
-            'z1_wrist_angle': 0, # -0.84,
-            'z1_forearm_roll': 0,
-            'z1_wrist_rotate': 0, # 0.0,
-            'z1_jointGripper': 0,
+            'z1_shoulder': 1.48,
+            'z1_elbow': -1.5,  # -0.63,
+            'z1_wrist_angle': 0,  # -0.84,
+            'z1_forearm_roll': 0.0,
+            'z1_wrist_rotate': 1.57,  # 0.0,
+            'z1_jointGripper': -0.785,
         }
 
     class control( ManipLocoCfg.control ):
@@ -143,20 +168,20 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             delta_torques = -1.0e-7/4.0
             work = 0
             energy_square = 0.0
-            torques = -2.5e-5 # -1e-5
+            torques = -8.0e-6 # -2.5e-5 -> -1.0e-5 -> -8.0e-6
             stand_still = 1.0 #1.0
-            walking_dof = 1.5
+            walking_dof = 2 # 1.5
             dof_default_pos = 0.0
             dof_error = 0.0 # -0.06 # -0.04
             alive = 1.0
             lin_vel_z = -1.5
             roll = -2.0
             
-            tracking_ang_pitch_vel = 0.5 # New reward, only useful when pitch_control = True
+            # tracking_ang_pitch_vel = 0.5 # New reward, only useful when pitch_control = True
 
             # common rewards
-            feet_air_time = 1.0
-            feet_height = 1.0
+            feet_air_time = 1.5 # 1.0
+            feet_height = 1.5 # 1.0
             ang_vel_xy = -0.2 # -0.1
             dof_acc = -7.5e-7 #-2.5e-7
             collision = -10.
@@ -169,7 +194,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             orientation = 0.0
             orientation_walking = 0.0
             orientation_standing = 0.0
-            base_height = -5.0
+            base_height = -7.0 # -5.0 -> -7.0
             torques_walking = 0.0
             torques_standing = 0.0
             energy_square_walking = 0.0
@@ -177,7 +202,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             base_height_walking = 0.0
             base_height_standing = 0.0
             penalty_lin_vel_y = 0.#-10.
-        base_height_target = 0.25 #0.55
+        base_height_target = 0.35 #0.25
         class arm_scales:
             arm_termination = None
             tracking_ee_sphere = 0.

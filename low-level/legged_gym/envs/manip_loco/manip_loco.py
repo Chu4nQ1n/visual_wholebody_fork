@@ -189,8 +189,8 @@ class ManipLoco(LeggedRobot):
         self.up_axis_idx = 2 # 2 for z(up), 1 for y -> adapt gravity accordingly
         self.sim = self.gym.create_sim(self.sim_device_id, self.graphics_device_id, self.physics_engine, self.sim_params)
         self.terrain = Terrain(self.cfg.terrain, )
-        # self._create_trimesh()
-        self._create_ground_plane()
+        self._create_trimesh()
+        # self._create_ground_plane()
         self._create_envs()  # line 225 --> Function
     def _create_ground_plane(self):
         plane_params = gymapi.PlaneParams()
@@ -250,7 +250,7 @@ class ManipLoco(LeggedRobot):
         asset_options.disable_gravity = self.cfg.asset.disable_gravity
         asset_options.use_mesh_materials = True
 
-        # widowGo1
+        # Robot
         robot_asset = self.gym.load_asset(self.sim, asset_root, asset_file, asset_options)
         self.num_dofs = self.gym.get_asset_dof_count(robot_asset)
         self.num_bodies = self.gym.get_asset_rigid_body_count(robot_asset)
@@ -261,9 +261,11 @@ class ManipLoco(LeggedRobot):
         rigid_shape_props_asset = self.gym.get_asset_rigid_shape_properties(robot_asset)
         self.body_names = self.gym.get_asset_rigid_body_names(robot_asset)
         self.body_names_to_idx = self.gym.get_asset_rigid_body_dict(robot_asset)
+        print(self.body_names_to_idx)
         self.dof_names = self.gym.get_asset_dof_names(robot_asset)
         self.dof_wo_gripper_names = self.dof_names[:-self.cfg.env.num_gripper_joints]
         self.dof_names_to_idx = self.gym.get_asset_dof_dict(robot_asset)
+        print(self.dof_names_to_idx)
         # self.num_bodies = len(self.body_names)
         # self.num_dofs = len(self.dof_names)
         feet_names = [s for s in self.body_names if self.cfg.asset.foot_name in s]  # foot_name = "foot" in b1z1_config
@@ -826,7 +828,7 @@ class ManipLoco(LeggedRobot):
             return
 
         # self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
-        if self.global_steps < 3000 * 24: # 3000 can learn forward
+        if self.global_steps < 5000 * 24: # 5000 can learn forward
             self.commands[env_ids, 0] = torch_rand_float(0, self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
         else:
             self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
@@ -1796,7 +1798,7 @@ class ManipLoco(LeggedRobot):
         return rew, rew
     
     def _reward_body_height_tracking(self):
-        b1_stand_up_height = 0.24 # 0.54
+        b1_stand_up_height = 0.34 # 0.24
         tracking_error = torch.square(self.base_pos[:, 2] - b1_stand_up_height)
         height_coeff = 1.0
         rew = torch.exp(-height_coeff*tracking_error)
