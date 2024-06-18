@@ -48,9 +48,9 @@ def train(args):
         pass
     if args.debug:
         mode = "disabled"
-        args.rows = 2 # 6
+        args.rows = 6 # 6
         args.cols = 2 # 2
-        args.num_envs = 1 # 128
+        args.num_envs = 128 # 128
     else:
         mode = "online"
     wandb.init(project=args.proj_name, name=args.exptid, mode=mode, dir=LEGGED_GYM_ROOT_DIR + "/logs")

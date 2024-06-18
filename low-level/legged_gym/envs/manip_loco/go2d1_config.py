@@ -34,20 +34,20 @@ import numpy as np
 class GO2D1RoughCfg( ManipLocoCfg ):
     class goal_ee ( ManipLocoCfg.goal_ee ):
         collision_upper_limits = [0.25, 0.12, -0.10] #0.4, 0.2, -0.05
-        collision_lower_limits = [-0.25, -0.12, -0.47] #-0.4, -0.2, -0.4
-        underground_limit = -0.47 #-0.7
+        collision_lower_limits = [-0.25, -0.12, -0.42] #-0.4, -0.2, -0.4
+        underground_limit = -0.42 #-0.7
         arm_induced_pitch = 0.38 # Added to -pos_p (negative goal pitch) to get default eef orn_p # 0.38
     
         class sphere_center ( ManipLocoCfg.goal_ee.sphere_center ):
             x_offset = 0 # Relative to base #0.3
             y_offset = 0 # Relative to base
-            z_invariant_offset = 0.47 # Relative to terrain #0.7
+            z_invariant_offset = 0.42 # Relative to terrain #0.7
         
         class ranges(ManipLocoCfg.goal_ee.ranges):
             init_pos_start = [0.5, np.pi/8, 0]
             init_pos_end = [0.7, 0, 0]
-            pos_l = [0.4, 0.95]
-            pos_p = [-1 * np.pi / 2.5, 1 * np.pi / 3]
+            pos_l = [0.4, 0.65]
+            pos_p = [-1 * np.pi / 6, 1 * np.pi / 3]
             pos_y = [-1.2, 1.2]
 
     class commands:
@@ -83,7 +83,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
         pitch_control = False
 
     class init_state( ManipLocoCfg.init_state ):
-        pos = [0.0, 0.0, 0.5] # x,y,z [m]
+        pos = [0.0, 0.0, 0.3] # x,y,z [m]
         default_joint_angles = { # = target angles [rad] when action = 0.0
             # 'z1_waist': 0.0,
             # 'z1_shoulder': 1.48,
@@ -142,9 +142,9 @@ class GO2D1RoughCfg( ManipLocoCfg ):
         }
 
     class control( ManipLocoCfg.control ):
-        stiffness = {'joint': 30, 'z1': 5}  # [N*m/rad] # Kp: 80, 150, 200
+        stiffness = {'joint': 25, 'z1': 5}  # [N*m/rad] # Kp: 80, 150, 200
         # Kp:80; Kd:2.0 for B1Z1; Kp:30; Kd:0.75 for Go2D1
-        damping = {'joint': 0.75, 'z1': 0.5}     # [N*m*s/rad]
+        damping = {'joint': 0.6, 'z1': 0.5}     # [N*m*s/rad]
 
     class asset( ManipLocoCfg.asset ):
         file = '{LEGGED_GYM_ROOT_DIR}/resources/robots/go2d1/urdf/go2d1.urdf'
@@ -202,7 +202,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             base_height_walking = 0.0
             base_height_standing = 0.0
             penalty_lin_vel_y = 0.#-10.
-        base_height_target = 0.35 #0.25
+        base_height_target = 0.32 #0.25
         class arm_scales:
             arm_termination = None
             tracking_ee_sphere = 0.
