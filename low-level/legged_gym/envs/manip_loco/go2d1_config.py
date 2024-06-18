@@ -85,13 +85,6 @@ class GO2D1RoughCfg( ManipLocoCfg ):
     class init_state( ManipLocoCfg.init_state ):
         pos = [0.0, 0.0, 0.3] # x,y,z [m]
         default_joint_angles = { # = target angles [rad] when action = 0.0
-            # 'z1_waist': 0.0,
-            # 'z1_shoulder': 1.48,
-            # 'z1_elbow': -1.5,  # -0.63,
-            # 'z1_wrist_angle': 0,  # -0.84,
-            # 'z1_forearm_roll': 0.0,
-            # 'z1_wrist_rotate': 1.57,  # 0.0,
-            # 'z1_jointGripper': -0.785,
 
             'FL_hip_joint': 0.1,  # [rad]
             'RL_hip_joint': 0.1,  # [rad]
@@ -107,6 +100,14 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             'RL_calf_joint': -1.5,  # [rad]
             'FR_calf_joint': -1.5,  # [rad]
             'RR_calf_joint': -1.5,  # [rad]
+
+            'z1_waist': 0.0,
+            'z1_shoulder': 1.48,
+            'z1_elbow': -1.5,  # -0.63,
+            'z1_wrist_angle': 0,  # -0.84,
+            'z1_forearm_roll': 0.0,
+            'z1_wrist_rotate': 1.57,  # 0.0,
+            'z1_jointGripper': -0.785,
             #
             # 'z1_waist': 0.0,
             # 'z1_shoulder': 0,
@@ -132,13 +133,6 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             # 'RR_thigh_joint': 0.8,  # [rad]
             # 'RR_calf_joint': -1.5,  # [rad]
 
-            'z1_waist': 0.0,
-            'z1_shoulder': 1.48,
-            'z1_elbow': -1.5,  # -0.63,
-            'z1_wrist_angle': 0,  # -0.84,
-            'z1_forearm_roll': 0.0,
-            'z1_wrist_rotate': 1.57,  # 0.0,
-            'z1_jointGripper': -0.785,
         }
 
     class control( ManipLocoCfg.control ):
