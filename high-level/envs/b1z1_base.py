@@ -560,7 +560,7 @@ class B1Z1Base(RewardVecTask):
         asset_options.default_dof_drive_mode = 3
         asset_options.collapse_fixed_joints = True
         asset_options.replace_cylinder_with_capsule = True
-        asset_options.flip_visual_attachments = False
+        asset_options.flip_visual_attachments = False   # True for Go2D1, False for B1Z1
         asset_options.fix_base_link = False
         asset_options.density = 1000.0
         asset_options.angular_damping = 0.
