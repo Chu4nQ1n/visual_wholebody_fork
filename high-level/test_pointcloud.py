@@ -70,7 +70,7 @@ def save_view(vis):
     return False
 
 if __name__ == "__main__":
-    directory = "/home/unimelb/Downloads/Github Projetcs/visual_wholebody_fork/high-level/data/asset/obj_set"
+    directory = "/home/chuan/Downloads/visual_wholebody_fork/high-level/data/asset/obj_set"
     subdirectories = list_subdirectories(directory)
     input_filename = os.path.join(directory, random.choice(subdirectories), "textured.obj")
     print("loaded object: ", input_filename)

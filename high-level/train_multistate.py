@@ -33,9 +33,9 @@ def create_env(cfg, args):
         cfg["record_video"] = True
     if args.control_freq is not None:
         cfg["env"]["controlFrequencyLow"] = int(args.control_freq)
-    robot_start_pose = (-2.00, 0, 0.55)
+    robot_start_pose = (-1.00, 0, 0.35)
     if args.eval:
-        robot_start_pose = (-0.85, 0, 0.55)
+        robot_start_pose = (-0.85, 0, 0.35)
     _env = eval(args.task)(cfg=cfg, rl_device=args.rl_device, sim_device=args.sim_device, 
                          graphics_device_id=args.graphics_device_id, headless=args.headless, 
                          use_roboinfo=args.roboinfo, observe_gait_commands=args.observe_gait_commands, no_feature=args.no_feature, mask_arm=args.mask_arm, pitch_control=args.pitch_control,
@@ -110,7 +110,7 @@ def get_trainer(is_eval=False):
     args = get_params()
     args.eval = is_eval
     args.wandb = args.wandb and (not args.eval) and (not args.debug)
-    cfg_file = "b1z1_" + args.task[4:].lower() + ".yaml"
+    cfg_file = "go2d1_" + args.task[4:].lower() + ".yaml"    #
     file_path = "data/cfg/" + cfg_file
     
     if args.resume:
@@ -214,7 +214,7 @@ def get_trainer(is_eval=False):
     if args.wandb:
         import wandb
         wandb.save("data/cfg/" + cfg_file, policy="now")
-        wandb.save("envs/b1z1_" + args.task[4:].lower() + ".py", policy="now")
+        wandb.save("envs/go2d1_" + args.task[4:].lower() + ".py", policy="now")
         wandb.save("train_multistate.py", policy="now")
     if not args.eval:
         if not os.path.exists(os.path.join(args.experiment_dir, args.wandb_name, cfg_file)):

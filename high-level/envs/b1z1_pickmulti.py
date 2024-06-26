@@ -17,12 +17,12 @@ from torch import Tensor
 import torchvision.transforms as transforms
 
 class B1Z1PickMulti(B1Z1Base):
-    def __init__(self, table_height=None, *args, **kwargs):
+    def __init__(self, table_height=None, *args, **kwargs): # None
         self.num_actors = 3
         super().__init__(*args, **kwargs)
         self.near_goal_stop = self.cfg["env"].get("near_goal_stop", False)
         self.obj_move_prob = self.cfg["env"].get("obj_move_prob", 0.0)
-        self.table_heights_fix = table_height
+        self.table_heights_fix = 0.4  #table_height / 0.4
 
     def update_roboinfo(self):
         super().update_roboinfo()
@@ -310,6 +310,10 @@ class B1Z1PickMulti(B1Z1Base):
             if self.cfg["env"].get("lastCommands", False):
                 self.obs_buf[env_ids] = torch.cat([self.feature_obs[env_ids, :], obs, self.command_history_buf[env_ids, -1]], dim=-1)
             else:
+                # print(self.obs_buf.shape)
+                # print(self.feature_obs[env_ids, :].shape)
+                # print(obs.shape)
+                # print(self.action_history_buf[env_ids, -1].shape)
                 self.obs_buf[env_ids] = torch.cat([self.feature_obs[env_ids, :], obs, self.action_history_buf[env_ids, -1]], dim=-1)
         else:
             if self.cfg["env"].get("lastCommands", False):
@@ -404,6 +408,8 @@ class B1Z1PickMulti(B1Z1Base):
         cube_falls = (z_cube < (self.table_heights + 0.03 / 2 - 0.05))
         self.reset_buf[:] = self.reset_buf | cube_falls
         # print("cube falls", cube_falls[0])
+
+        # print(self.reset_buf, cube_falls)
         
         if self.enable_camera:
             robot_head_dir = quat_apply(self.base_yaw_quat, torch.tensor([1., 0., 0.], device=self.device).repeat(self.num_envs, 1))
@@ -497,7 +503,7 @@ def compute_robot_observations(robot_root_state, table_root_state, cube_root_sta
         dof_vel = dof_vel[..., 12:-1] # arm_dof_vel
     
     base_quat = robot_root_state[:, 3:7]
-    arm_base_local = torch.tensor([0.3, 0.0, 0.09], device=robot_root_state.device).repeat(robot_root_state.shape[0], 1)
+    arm_base_local = torch.tensor([0.0, 0.0, 0.06], device=robot_root_state.device).repeat(robot_root_state.shape[0], 1) #0.3, 0.0, 0.09
     arm_base = quat_apply(base_quat, arm_base_local) + robot_root_state[:, :3]
     
     # cube_pos_local = quat_rotate_inverse(base_quat, cube_pos - arm_base)

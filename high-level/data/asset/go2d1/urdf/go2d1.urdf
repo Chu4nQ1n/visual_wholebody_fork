@@ -1615,7 +1615,7 @@
     <child link="gripperMover"/>
     <axis xyz="0 0 1"/>
     <dynamics damping="1.0" friction="1.0"/>
-    <limit effort="5.0" lower="-0.03" upper="0.0" velocity="1"/>
+    <limit effort="10.0" lower="-0.03" upper="0.0" velocity="3"/>
   </joint>
   <link name="gripperMover">
     <visual>

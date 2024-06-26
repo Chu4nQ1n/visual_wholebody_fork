@@ -44,7 +44,7 @@ class B1Z1Base(RewardVecTask):
                  no_feature: bool = False, mask_arm: bool = False, depth_random=False,
                  robot_start_pose: tuple =(-2.00, 0, 0.55), stu_distill=False, 
                  commands_curriculum=True, pitch_control=False, pred_success=False,
-                 rand_control=False, arm_delay=False, num_gripper_dof=1, rand_cmd_scale=False,
+                 rand_control=False, arm_delay=False, num_gripper_dof=1, rand_cmd_scale=False,      #2
                  rand_depth_clip=False, stop_pick=False, eval=False,
                  *args, **kwargs
                 ):
@@ -114,7 +114,7 @@ class B1Z1Base(RewardVecTask):
         if not self.floating_base:
             self.low_level_policy = self._load_low_level_model()
         else:
-            self.num_gripper_joints = 1
+            self.num_gripper_joints = 1 # 2
         
         self._prepare_reward_function()
         
@@ -506,39 +506,71 @@ class B1Z1Base(RewardVecTask):
     def _set_default_joint_angles_dict(self):
         if self.floating_base:
             default_joint_angles = { # = target angles [rad] when action = 0.0
+                # 'z1_waist': 0.0,
+                # 'z1_shoulder': 1.48,
+                # 'z1_elbow': -0.63,
+                # 'z1_wrist_angle': -0.84,
+                # 'z1_forearm_roll': 0.0,
+                # 'z1_wrist_rotate': 1.57, #1.57,
+                # 'z1_jointGripper': -1.57,#-0.785,
                 'z1_waist': 0.0,
-                'z1_shoulder': 1.48,
-                'z1_elbow': -0.63,
-                'z1_wrist_angle': -0.84,
+                'z1_shoulder': 0.0,  # 1.48
+                'z1_elbow': 0.0,  # -1.5,
+                'z1_wrist_angle': 0,  # -0.84,
                 'z1_forearm_roll': 0.0,
-                'z1_wrist_rotate': 1.57, #1.57,
-                'z1_jointGripper': -1.57,#-0.785,
+                'z1_wrist_rotate': 0.0,  # 1.57,
+                'z1_jointGripper': 0.0,  # -0.785,
+                # 'z1_gripperStator': 0.0,
             }
         else:
             default_joint_angles = { # = target angles [rad] when action = 0.0
-                'FL_hip_joint': 0.2,   # [rad]
-                'FL_thigh_joint': 0.8,     # [rad]
-                'FL_calf_joint': -1.5,   # [rad]
+                # 'FL_hip_joint': 0.2,   # [rad]
+                # 'FL_thigh_joint': 0.8,     # [rad]
+                # 'FL_calf_joint': -1.5,   # [rad]
+                #
+                # 'RL_hip_joint': 0.2,   # [rad]
+                # 'RL_thigh_joint': 0.8,   # [rad]
+                # 'RL_calf_joint': -1.5,    # [rad]
+                #
+                # 'FR_hip_joint': -0.2 ,  # [rad]
+                # 'FR_thigh_joint': 0.8,     # [rad]
+                # 'FR_calf_joint': -1.5,  # [rad]
+                #
+                # 'RR_hip_joint': -0.2,   # [rad]
+                # 'RR_thigh_joint': 0.8,   # [rad]
+                # 'RR_calf_joint': -1.5,    # [rad]
+                #
+                # 'z1_waist': 0.0,
+                # 'z1_shoulder': 1.48,
+                # 'z1_elbow': -1.5, # -0.63,
+                # 'z1_wrist_angle': 0, # -0.84,
+                # 'z1_forearm_roll': 0.0,
+                # 'z1_wrist_rotate': 1.57, # 0.0,
+                # 'z1_jointGripper': -1.57, # -0.785,
 
-                'RL_hip_joint': 0.2,   # [rad]
-                'RL_thigh_joint': 0.8,   # [rad]
-                'RL_calf_joint': -1.5,    # [rad]
+                'FL_hip_joint': 0.1,  # [rad]
+                'RL_hip_joint': 0.1,  # [rad]
+                'FR_hip_joint': -0.1,  # [rad]
+                'RR_hip_joint': -0.1,  # [rad]
 
-                'FR_hip_joint': -0.2 ,  # [rad]
-                'FR_thigh_joint': 0.8,     # [rad]
+                'FL_thigh_joint': 0.8,  # [rad]
+                'RL_thigh_joint': 1.,  # [rad]
+                'FR_thigh_joint': 0.8,  # [rad]
+                'RR_thigh_joint': 1.,  # [rad]
+
+                'FL_calf_joint': -1.5,  # [rad]
+                'RL_calf_joint': -1.5,  # [rad]
                 'FR_calf_joint': -1.5,  # [rad]
-
-                'RR_hip_joint': -0.2,   # [rad]
-                'RR_thigh_joint': 0.8,   # [rad]
-                'RR_calf_joint': -1.5,    # [rad]
+                'RR_calf_joint': -1.5,  # [rad]
 
                 'z1_waist': 0.0,
-                'z1_shoulder': 1.48,
-                'z1_elbow': -1.5, # -0.63,
-                'z1_wrist_angle': 0, # -0.84,
+                'z1_shoulder': 0.0,  # 1.48
+                'z1_elbow': 0.0,  # -1.5,
+                'z1_wrist_angle': 0,  # -0.84,
                 'z1_forearm_roll': 0.0,
-                'z1_wrist_rotate': 1.57, # 0.0,
-                'z1_jointGripper': -1.57, # -0.785,
+                'z1_wrist_rotate': 0.0,  # 1.57,
+                'z1_jointGripper': 0.0,  # -0.785,
+                # 'z1_gripperStator': 0.0,
             }
         return default_joint_angles
     
@@ -560,7 +592,7 @@ class B1Z1Base(RewardVecTask):
         asset_options.default_dof_drive_mode = 3
         asset_options.collapse_fixed_joints = True
         asset_options.replace_cylinder_with_capsule = True
-        asset_options.flip_visual_attachments = False   # True for Go2D1, False for B1Z1
+        asset_options.flip_visual_attachments = True # True for Go2D1, False for B1Z1
         asset_options.fix_base_link = False
         asset_options.density = 1000.0
         asset_options.angular_damping = 0.
@@ -603,6 +635,9 @@ class B1Z1Base(RewardVecTask):
         default_joint_angles = self._set_default_joint_angles_dict()
         robot_dof_dict = self.gym.get_asset_dof_dict(robot_asset)
         initial_pos = np.zeros(self.num_dofs, dtype=np.float32)
+        # print("default_joint_angles: ", default_joint_angles)
+        # print(robot_dof_dict)
+        # print(self.num_dofs)
         for k, v in default_joint_angles.items():
             initial_pos[robot_dof_dict[k]] = v
         initial_dof_state = np.zeros(self.num_dofs, dtype=gymapi.DofState.dtype)
@@ -824,7 +859,8 @@ class B1Z1Base(RewardVecTask):
             
             if self.local_step_counter == 0:
                 self.curr_ee_goal_orn_rpy[:, :] = torch.tensor([np.pi/2, 0., 0.], device=self.device)
-                self.curr_ee_goal_cart[:] = torch.tensor([0.46, 0.0, 0.55], device=self.device).repeat(self.num_envs, 1)
+                # TODO modify here
+                self.curr_ee_goal_cart[:] = torch.tensor([0, 0.3, 0.82], device=self.device).repeat(self.num_envs, 1)    #0.46, 0.0, 0.55 #0, 0.3, 0.82/0, 0.8, -0.3
                 self.init_ee_goal_cart = self.curr_ee_goal_cart.clone()
             else:
                 self.curr_ee_goal_cart[env_ids, :] = self.init_ee_goal_cart[env_ids, :]
@@ -1113,7 +1149,7 @@ class B1Z1Base(RewardVecTask):
         # print("curr_ee_orn_local", curr_ee_orn_local_rpy)
         # curr_flange_local = quat_rotate_inverse(self._robot_root_states[:, 3:7], self._rigid_body_pos[:, self.flange_idx] - arm_base)
         # flange_too_low = curr_flange_local[:, 2] < 0.
-        ik_fail = (self.curr_ee_goal_cart[:, -1:] - curr_ee_pos_local[:, -1:]).norm(dim=-1) > 0.2
+        ik_fail = (self.curr_ee_goal_cart[:, -1:] - curr_ee_pos_local[:, -1:]).norm(dim=-1) > 0.2   #
         # ik_fail &= (torch.div(self.curr_ee_goal_cart[:, -1], curr_ee_pos_local[:, -1]) < 0)
         # print("ikfail", ik_fail[0], self.curr_ee_goal_cart[0, -1:], curr_ee_pos_local[0, -1:])
         
@@ -1125,6 +1161,8 @@ class B1Z1Base(RewardVecTask):
         
         self.last_ee_pos = curr_ee_pos_local
 
+        # print(self.timeout_buf, r_term, p_term, z_term, ik_fail)
+        # print("Terminate in b1z1_base.py")
     def _prepare_reward_function(self):
         for key in list(self.reward_scales.keys()):
             scale = self.reward_scales[key]
@@ -1515,7 +1553,8 @@ class B1Z1Base(RewardVecTask):
     def update_roboinfo(self):
         # Arm base
         base_quat = self._robot_root_states[:, 3:7]
-        arm_base_local = torch.tensor([0.3, 0.0, 0.09], device=self.device).repeat(self.num_envs, 1)
+        # TODO modify here
+        arm_base_local = torch.tensor([0.3, 0.0, 0.09], device=self.device).repeat(self.num_envs, 1) # 0.3, 0.0, 0.09/0.0, 0.0, 0.06
         self.arm_base = quat_apply(base_quat, arm_base_local) + self._robot_root_states[:, :3]
         
     def obtain_imgs(self):

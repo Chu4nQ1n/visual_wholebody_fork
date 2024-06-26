@@ -34,14 +34,14 @@ import numpy as np
 class GO2D1RoughCfg( ManipLocoCfg ):
     class goal_ee ( ManipLocoCfg.goal_ee ):
         collision_upper_limits = [0.25, 0.12, -0.05] #0.4, 0.2, -0.10
-        collision_lower_limits = [-0.25, -0.12, -0.43] #-0.4, -0.2, -0.4
-        underground_limit = -0.43 #-0.7
+        collision_lower_limits = [-0.25, -0.12, -0.45] #-0.4, -0.2, -0.4
+        underground_limit = -0.45 #-0.7
         arm_induced_pitch = 0.38 # Added to -pos_p (negative goal pitch) to get default eef orn_p # 0.38
     
         class sphere_center ( ManipLocoCfg.goal_ee.sphere_center ):
             x_offset = 0 # Relative to base #0.3
             y_offset = 0 # Relative to base
-            z_invariant_offset = 0.43 # Relative to terrain #0.7
+            z_invariant_offset = 0.45 # Relative to terrain #0.7
         
         class ranges(ManipLocoCfg.goal_ee.ranges):
             init_pos_start = [0.5, np.pi/8, 0]
@@ -83,7 +83,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
         pitch_control = False
 
     class init_state( ManipLocoCfg.init_state ):
-        pos = [0.0, 0.0, 0.3] # x,y,z [m]
+        pos = [0.0, 0.0, 0.37] # x,y,z [m]
         default_joint_angles = { # = target angles [rad] when action = 0.0
 
             'FL_hip_joint': 0.1,  # [rad]
@@ -102,12 +102,13 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             'RR_calf_joint': -1.5,  # [rad]
 
             'z1_waist': 0.0,
-            'z1_shoulder': 1.48,
-            'z1_elbow': -1.5,  # -0.63,
+            'z1_shoulder': 0.0,  # 1.48
+            'z1_elbow': 0.0,  # -1.5,
             'z1_wrist_angle': 0,  # -0.84,
             'z1_forearm_roll': 0.0,
-            'z1_wrist_rotate': 1.57,  # 0.0,
-            'z1_jointGripper': -0.785,
+            'z1_wrist_rotate': 0.0,  # 1.57,
+            'z1_jointGripper': 0.0,  # -0.785,
+            # 'z1_gripperStator': 0.0,
             #
             # 'z1_waist': 0.0,
             # 'z1_shoulder': 0,
@@ -137,7 +138,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
 
     class control( ManipLocoCfg.control ):
         stiffness = {'joint': 25, 'z1': 5}  # [N*m/rad] # Kp: 80, 150, 200  30
-        # Kp:80; Kd:2.0 for B1Z1; Kp:30; Kd:0.75 for Go2D1
+        # Kp:80; Kd:2.0 for B1Z1; Kp:25; Kd:0.6 for Go2D1
         damping = {'joint': 0.6, 'z1': 0.5}     # [N*m*s/rad] 0.75
 
     class asset( ManipLocoCfg.asset ):
@@ -164,7 +165,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             energy_square = 0.0
             torques = -2.5e-5 # -2.5e-5 -> -1.0e-5
             stand_still = 1.0 #1.0
-            walking_dof = 2 # 1.5
+            walking_dof = 2 # 1.5/2.0
             dof_default_pos = 0.0
             dof_error = 0.0 # -0.06 # -0.04
             alive = 1.0
@@ -174,8 +175,8 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             # tracking_ang_pitch_vel = 0.5 # New reward, only useful when pitch_control = True
 
             # common rewards
-            feet_air_time = 1.5 # 1.0
-            feet_height = 1.5 # 1.0
+            feet_air_time = 1.0 # 1.5
+            feet_height = 1.0 # 1.5
             ang_vel_xy = -0.2 # -0.1
             dof_acc = -7.5e-7 #-2.5e-7
             collision = -10.
@@ -196,7 +197,7 @@ class GO2D1RoughCfg( ManipLocoCfg ):
             base_height_walking = 0.0
             base_height_standing = 0.0
             penalty_lin_vel_y = 0.#-10.
-        base_height_target = 0.33 #0.25 0.35
+        base_height_target = 0.35 #0.25 0.35
         class arm_scales:
             arm_termination = None
             tracking_ee_sphere = 0.

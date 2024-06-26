@@ -1,5 +1,5 @@
 env:
-  numEnvs: 4096 #10240
+  numEnvs: 2048 #10240
   numAgents: 1
   envSpacing: 5.0
   enableDebugVis: False
@@ -17,7 +17,7 @@ env:
   holdSteps: 25
   lastCommands: False
 
-  low_policy_path: "/home/unimelb/Downloads/Github Projetcs/visual_wholebody_fork/low-level/logs/go2d1-low/16_June_unimelb_random_test/model_80000.pt" # "data/low_policy/jan17-frontfeet_terrainflat_linrew2_freq2_gaitstopzero_penelizeang_roll_fixbug_35600.pt"
+  low_policy_path: "/home/chuan/Downloads/visual_wholebody_fork/low-level/logs/go2d1-low/21_June_2024_Go2D1_modify_base_height_2finger/model_105000.pt" # "data/low_policy/jan17-frontfeet_terrainflat_linrew2_freq2_gaitstopzero_penelizeang_roll_fixbug_35600.pt"
 
   asset:
     assetRoot: "data/asset"
@@ -25,176 +25,176 @@ env:
     assetFileObj: "obj_set/"
 
     asset_multi:
-      green_bowl:
-        dict_idx: 0
-        height: 0.026
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
+#      green_bowl:
+#        dict_idx: 0
+#        height: 0.026
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
       sugar_box:
         dict_idx: 1
         height: 0.088
         orientation: [0.0, 0.707, 0.0, 0.707]
         scale: 1.0
-      potato_chip_1:
-        dict_idx: 2
-        height: 0.086
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 0.8
-      plastic_peach:
-        dict_idx: 3
-        height: 0.0
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      plastic_banana:
-        dict_idx: 4
-        height: 0.019
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      green_cup:
-        dict_idx: 5
-        height: 0.031
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      magic_clean:
-        dict_idx: 6
-        height: 0.127
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      power_drill:
-        dict_idx: 8
-        height: 0.094
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      soap_dish:
-        dict_idx: 9
-        height: 0.021
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      yellow_bowl:
-        dict_idx: 10
-        height: 0.026
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      pitcher:
-        dict_idx: 11
-        height: 0.120
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      blue_tea_box:
-        dict_idx: 12
-        height: 0.037
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      mug:
-        dict_idx: 13
-        height: 0.042
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      lipton_tea:
-        dict_idx: 14
-        height: 0.043
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      conditioner:
-        dict_idx: 15
-        height: 0.08
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      plastic_lemon:
-        dict_idx: 16
-        height: 0.0
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      shampoo:
-        dict_idx: 17
-        height: 0.082
-        orientation: [-0.707, 0.0, 0.0, 0.707]
-        scale: 1.0
-      plastic_apple:
-        dict_idx: 18
-        height: 0.0
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      plate_holder:
-        dict_idx: 19
-        height: 0.052
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      book_holder_3:
-        dict_idx: 20
-        height: 0.078
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      repellent:
-        dict_idx: 21
-        height: 0.106
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      glue_1:
-        dict_idx: 22
-        height: 0.058
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      blue_moon:
-        dict_idx: 23
-        height: 0.124
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      plastic_orange:
-        dict_idx: 24
-        height: 0.0
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      pink_tea_box:
-        dict_idx: 25
-        height: 0.038
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      bleach_cleanser:
-        dict_idx: 26
-        height: 0.124
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 0.5
-      phillips_screwdriver:
-        dict_idx: 27
-        height: 0.016
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      doraemon_bowl:
-        dict_idx: 28
-        height: 0.027
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      orange_cup:
-        dict_idx: 29
-        height: 0.031
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      blue_cup:
-        dict_idx: 30
-        height: 0.031
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      cleanser:
-        dict_idx: 31
-        height: 0.088
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      bowl:
-        dict_idx: 32
-        height: 0.029
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
-      clear_box:
-        dict_idx: 33
-        height: 0.051
-        orientation: [0.0, 0.0, 0.0, 1.0]
-        scale: 1.0
+#      potato_chip_1:
+#        dict_idx: 2
+#        height: 0.086
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 0.8
+#      plastic_peach:
+#        dict_idx: 3
+#        height: 0.0
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      plastic_banana:
+#        dict_idx: 4
+#        height: 0.019
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      green_cup:
+#        dict_idx: 5
+#        height: 0.031
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      magic_clean:
+#        dict_idx: 6
+#        height: 0.127
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      power_drill:
+#        dict_idx: 8
+#        height: 0.094
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      soap_dish:
+#        dict_idx: 9
+#        height: 0.021
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      yellow_bowl:
+#        dict_idx: 10
+#        height: 0.026
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      pitcher:
+#        dict_idx: 11
+#        height: 0.120
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      blue_tea_box:
+#        dict_idx: 12
+#        height: 0.037
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      mug:
+#        dict_idx: 13
+#        height: 0.042
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      lipton_tea:
+#        dict_idx: 14
+#        height: 0.043
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      conditioner:
+#        dict_idx: 15
+#        height: 0.08
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      plastic_lemon:
+#        dict_idx: 16
+#        height: 0.0
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      shampoo:
+#        dict_idx: 17
+#        height: 0.082
+#        orientation: [-0.707, 0.0, 0.0, 0.707]
+#        scale: 1.0
+#      plastic_apple:
+#        dict_idx: 18
+#        height: 0.0
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      plate_holder:
+#        dict_idx: 19
+#        height: 0.052
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      book_holder_3:
+#        dict_idx: 20
+#        height: 0.078
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      repellent:
+#        dict_idx: 21
+#        height: 0.106
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      glue_1:
+#        dict_idx: 22
+#        height: 0.058
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      blue_moon:
+#        dict_idx: 23
+#        height: 0.124
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      plastic_orange:
+#        dict_idx: 24
+#        height: 0.0
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      pink_tea_box:
+#        dict_idx: 25
+#        height: 0.038
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      bleach_cleanser:
+#        dict_idx: 26
+#        height: 0.124
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 0.5
+#      phillips_screwdriver:
+#        dict_idx: 27
+#        height: 0.016
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      doraemon_bowl:
+#        dict_idx: 28
+#        height: 0.027
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      orange_cup:
+#        dict_idx: 29
+#        height: 0.031
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      blue_cup:
+#        dict_idx: 30
+#        height: 0.031
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      cleanser:
+#        dict_idx: 31
+#        height: 0.088
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      bowl:
+#        dict_idx: 32
+#        height: 0.029
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
+#      clear_box:
+#        dict_idx: 33
+#        height: 0.051
+#        orientation: [0.0, 0.0, 0.0, 1.0]
+#        scale: 1.0
       
 
     control:
-        stiffness: {'joint': 20, 'z1': 5}  # [N*m/rad]
-        damping: {'joint': 0.6, 'z1': 0.5}     # [N*m*s/rad]
+        stiffness: {'joint': 50, 'z1': 5}  # [N*m/rad]
+        damping: {'joint': 1.0, 'z1': 0.5}     # [N*m*s/rad]
 
   plane:
     staticFriction: 1.0
@@ -224,7 +224,7 @@ sim:
     max_gpu_contact_pairs: 1000000 #284032
 
 reward:
-  base_height_target: 0.32
+  base_height_target: 0.35
   only_positive_rewards: False
   scales:
     approaching: 0.5
